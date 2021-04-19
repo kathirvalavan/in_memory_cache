@@ -1,5 +1,5 @@
 module MemoryCache
-  # A processor level in memory cache storage. Data is not across multiple processes
+  # A processor level in memory cache storage. Data is not across multiple processes. Thread-safe
   class MemoryCacheStore
     def initialize
       @data = {}
