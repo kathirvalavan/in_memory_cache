@@ -2,15 +2,17 @@ module MemoryCache
   # A processor level in memory cache storage. Data is not across multiple processes. Thread-safe
   class MemoryCacheStore
 
+    MEGABYTE = 1024 * 1024
+
     def initialize
       @data = {}
       @key_access_store = {}
       @lock = Monitor.new
       @cache_size = 0
-      @max_size = 20.megabytes
-      @buffer_size = 5.megabytes
+      @max_size = 25 * MEGABYTE
+      @buffer_size = 5 * MEGABYTE
       @max_wait_loop_for_flush = 100
-      @max_single_value_limit = 2.megabytes
+      @max_single_value_limit = 2 * MEGABYTE
     end
 
 
@@ -42,7 +44,7 @@ module MemoryCache
     def read(key, options = {})
       synchronize_block do
         @key_access_store[key] = Time.now.utc.to_i
-        return @data[key] ? @data[key].dup : nil
+        return @data[key] ? dup_value(@data[key]) : nil
       end
     end
 
@@ -103,6 +105,10 @@ module MemoryCache
 
     def can_allocate_value?(value = '')
       value.to_s.bytesize < @max_single_value_limit
+    end
+
+    def dup_value(value)
+      value.is_a?(String) ? value.dup : value
     end
 
   end
