@@ -18,7 +18,7 @@ module MemoryCache
     # return true if success, false if any exception
     def write(key, value, options = {})
       synchronize_block do
-        return false if can_allocate_value?(value)
+        return false unless can_allocate_value?(value)
         prune_keys(@buffer_size) if is_buffer_limit_reached?
 
         old_value_present = false
