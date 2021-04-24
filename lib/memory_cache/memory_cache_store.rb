@@ -75,7 +75,7 @@ module MemoryCache
     private
 
     def prune_keys(new_allocate_size = 0)
-      keys = synchronize_block { @key_access.keys.sort { |a, b| @key_access[a] <=> @key_access[b] } }
+      keys = synchronize_block { @key_access_store.keys.sort { |a, b| @key_access_store[a] <=> @key_access_store[b] } }
       loop_counter = 0
       keys.each do |key|
         delete(key)
