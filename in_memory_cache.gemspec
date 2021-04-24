@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'in_memory_cache'
-  s.version     = '1.0'
+  s.version     = '1.1'
   s.date        = '2021-03-31'
   s.summary     = "Ruby In memory cache"
   s.description = "A simple gem for in memory LRU cache"
