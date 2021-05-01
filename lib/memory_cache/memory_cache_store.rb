@@ -32,7 +32,7 @@ module MemoryCache
         end
 
         @data[key] = value
-        @key_access_store[key] = Time.now.utc.to_i
+        set_key_access_strategy(key)
         @cache_size -= old_value_size if old_value_present
         @cache_size += compute_value_size(value)
         return true
@@ -43,7 +43,7 @@ module MemoryCache
     # return value of the key
     def read(key, options = {})
       synchronize_block do
-        @key_access_store[key] = Time.now.utc.to_i
+        set_key_access_strategy(key)
         return @data[key] ? dup_value(@data[key]) : nil
       end
     end
@@ -77,7 +77,7 @@ module MemoryCache
     private
 
     def prune_keys(new_allocate_size = 0)
-      keys = synchronize_block { @key_access_store.keys.sort { |a, b| @key_access_store[a] <=> @key_access_store[b] } }
+      keys = prune_keys_in_order
       loop_counter = 0
       keys.each do |key|
         delete(key)
@@ -109,6 +109,14 @@ module MemoryCache
 
     def dup_value(value)
       value.is_a?(String) ? value.dup : value
+    end
+
+    def set_key_access_strategy(key)
+      @key_access_store[key] = Time.now.utc.to_i
+    end
+
+    def prune_keys_in_order
+      synchronize_block { @key_access_store.keys.sort { |a, b| @key_access_store[a] <=> @key_access_store[b] } }
     end
 
   end
