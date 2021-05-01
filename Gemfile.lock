@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    in_memory_cache (0.0.0)
+    in_memory_cache (1.2)
 
 GEM
   remote: https://rubygems.org/
